@@ -39,7 +39,7 @@ function lookupSym(character, dict)
   else
   {
     return {
-      width_coeff: 1.0,
+      width_coeff: 0.6,
       dots: [0,0,0,0,0,0],
       dashes: [0,0,0,0,0],
       unknown: true
