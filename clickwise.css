@@ -1,0 +1,35 @@
+.container{
+  width:60%;
+  margin:auto;
+  min-height:20em;
+}
+
+.result{
+  width:60%;
+  min-width:18em;
+  padding:1em;
+  margin:auto;
+  text-align:center;
+  overflow-x:auto;
+}
+
+img{
+  display:block;
+  margin:auto;
+}
+
+.input_area{
+  background-color:#AAAAAA;
+  width:60%;
+  min-width:18em;
+  margin:auto;
+  padding:1em;
+}
+
+.dictionary_select{
+  padding:1em;
+}
+
+.field {
+  margin:1em;
+}
