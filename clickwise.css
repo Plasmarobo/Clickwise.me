@@ -3,13 +3,14 @@ body{
   margin: 0;
   width:100%;
   height:100%;
-  background-color:#4D4D4D;
-  color:#FFFFFF;
   font-size:16pt;
 }
 
 .container{
+	
   width:95%;
+  min-width:30em;
+  max-width:85em;
   margin:auto;
   min-height:10em;
 }
@@ -33,14 +34,23 @@ img{
   display:block;
   margin:auto;
 }
+.hidden{
+	display:none;
+}
 
 .input_area{
-  background-color:#CCCCCC;
   width:90%;
-  min-width:12em;
-  max-width:30em;
+  height:auto;
   margin:auto;
   padding:0.5em;
+}
+
+#source_string{
+	font-size:36pt;
+	width:95%;
+	height:1.5em;
+	margin:auto;
+	position:relative;
 }
 
 .dictionary_select{
