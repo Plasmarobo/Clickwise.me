@@ -91,7 +91,7 @@ var clocktalk_dictionary = {
          unknown: true},
   'W'  : {width_coeff: 1,
          dots: [1,0,0,0,1,1],
-         dashes: [1,1,1,1,1],
+         dashes: [1,1,1,1,0],
          unknown: false},
   'X'  : {width_coeff: 1,
          dots: [0,0,0,0,0,0],
@@ -105,6 +105,11 @@ var clocktalk_dictionary = {
          dots: [0,0,0,0,0,0],
          dashes: [0,0,0,0,0],
          unknown: true},
+  '3'  : {width_coeff: 1,
+         dots: [1,1,0,0,0,1],
+         dashes: [0,0,0,0,0],
+         unknown: false},
+  }
 };
 
 dictionaries['Clocktalk'] = clocktalk_dictionary;
