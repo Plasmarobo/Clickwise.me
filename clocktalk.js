@@ -109,7 +109,6 @@ var clocktalk_dictionary = {
          dots: [1,1,0,0,0,1],
          dashes: [0,0,0,0,0],
          unknown: false},
-  }
 };
 
 dictionaries['Clocktalk'] = clocktalk_dictionary;
