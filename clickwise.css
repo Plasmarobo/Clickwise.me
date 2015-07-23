@@ -22,6 +22,7 @@ body{
   margin:auto;
   text-align:center;
   overflow-x:auto;
+  position:relative;
 }
 
 .indent{
@@ -34,20 +35,31 @@ img{
   display:block;
   margin:auto;
 }
-.hidden{
+
+.settings{
 	display:none;
 }
 
 .input_area{
-  width:90%;
+  width:95%;
   height:auto;
   margin:auto;
   padding:0.5em;
+  position:absolute;
+}
+.collapse_icon{
+	width:90%;
+}
+
+#collapse_icon{
+	margin:0;
+	height:32;
+	width:32;
 }
 
 #source_string{
 	font-size:36pt;
-	width:95%;
+	width:98%;
 	height:1.5em;
 	margin:auto;
 	position:relative;

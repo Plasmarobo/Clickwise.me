@@ -3,7 +3,7 @@
 //Based on Jon Nolnar's work at http://www.cogspace.com/clickwise/
 
 var symbol_def = {
-  height: 100,
+  height: 80,
   width: 20,
   radius: 5,    //dot radius
   thickness: 2, //dash thickness
