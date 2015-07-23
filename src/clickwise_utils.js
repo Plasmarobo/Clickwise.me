@@ -11,7 +11,7 @@ function render(event)
 		  break;
 	  }
 	}
-	imgURL = drawStringWithDictionary(src_str, dictionary_key);
+	imgURL = drawStringWithDictionary(src_str, dictionary_key, 'default');
 	document.getElementById("clickwise-result").src = imgURL;
 	if (!(typeof event === "undefined"))
 	{
@@ -19,6 +19,7 @@ function render(event)
 	}
 	return false;
 }
+
 function setupDictionaries(id)
 {
 	var checked = true;

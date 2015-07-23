@@ -1,9 +1,11 @@
 $(document).ready(function()
 {
+
 	$('#result_section').hide();
 	positionInput();
 	setupDebug();
 	setupDictionaries('dictionary_list');
+
 	$('#source_string').keyup(function(){
 		if (!$('#source_string').val())
 		{
@@ -16,6 +18,7 @@ $(document).ready(function()
 			positionResult();
 		}
 	});
+
 	$('#source_string').keydown(function (e){
 		if(e.keyCode == 13){
 			$('#result_section').show();
@@ -23,6 +26,7 @@ $(document).ready(function()
 			positionResult();
 		}
 	});
+
 	$(window).resize(function(){
 		setInput();
 		setResult();

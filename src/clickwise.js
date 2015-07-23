@@ -2,14 +2,9 @@
 //2015 Austen Higgins-Cassidy
 //Based on Jon Nolnar's work at http://www.cogspace.com/clickwise/
 
-var symbol_def = {
-  height: 80,
-  width: 20,
-  radius: 5,    //dot radius
-  thickness: 2, //dash thickness
-  padding: 2
-}
 
+var default_profile = null;
+var symbol_profiles = {};
 var debug = false;
 var max_dots = 6;
 var max_dashes = 5;
@@ -24,51 +19,66 @@ var dictionaries = {};
 // dashes: [0,0,0,0,0],
 // unknown: false
 //}
+function validateDictionary(dict)
+{
+  return typeof dict !== 'undefined' ? dict : default_dictionary;
+}
+
+function validateProfile(prof)
+{
+  return typeof prof !== 'undefined' ? prof : default_profile;
+}
 
 function lookupSym(character, dict)
 {
-  dict = typeof dict !== 'undefined' ? dict : default_dictionary;
+  dict = validateDictionary(dict);
   if (dict === null)
   {
     alert("No dictionary set");
   }
-  if (character in dict)
-  {
-    return dict[character];
-  }
   else
   {
-    return {
-      width_coeff: 0.6,
-      dots: [0,0,0,0,0,0],
-      dashes: [0,0,0,0,0],
-      unknown: true
-    };
+    if (character in dict)
+    {
+      return dict[character];
+    }
+    else
+    {
+      return {
+        width_coeff: 0.6,
+        dots: [0,0,0,0,0,0],
+        dashes: [0,0,0,0,0],
+        unknown: true
+      };
+    }
   }
 }
 
-function getSymWidth(sym)
+function getSymWidth(sym, profile)
 {
-  return symbol_def.width * sym.width_coeff;
+  profile = validateProfile(profile);
+  return profile.width * sym.width_coeff;
 }
 
-function drawSpace()
+function drawSpace(profile)
 {
-  return symbol_def.width * space_width_coeff;
+  profile = validateProfile(profile);
+  return profile.width * space_width_coeff;
 }
 
-function drawSymbol(context, sym, x, y)
+function drawSymbol(context, sym, x, y, profile)
 {
-  var w = getSymWidth(sym);
+  profile = validateProfile(profile);
+  var w = getSymWidth(sym, profile);
   if (!sym.unknown)
   {
-    context.fillStyle = 'black';
-    context.fillRect(x,y,w, symbol_def.height);
-    context.fillStyle = 'white';
-    var cell_height = symbol_def.height/6;
+    context.fillStyle = profile.box_color;
+    context.fillRect(x,y,w, profile.height);
+    context.fillStyle = profile.feature_color;
+    var cell_height = profile.height/6;
     var center_y = y + cell_height/2;
     var center_x = x + w/2;
-    var dash_offset = symbol_def.thickness / 2;
+    var dash_offset = profile.thickness / 2;
   
     for(var i = 0; i < max_dots; ++i)
     {
@@ -76,13 +86,13 @@ function drawSymbol(context, sym, x, y)
       {
         if (sym.dashes[i] == 1)
         {
-          context.fillRect(center_x - dash_offset, Math.floor(center_y), symbol_def.thickness, Math.ceil(cell_height));
+          context.fillRect(center_x - dash_offset, Math.floor(center_y), profile.thickness, Math.ceil(cell_height));
         }
       }
       if (sym.dots[i] == 1)
       {
         context.beginPath();
-        context.arc(center_x, center_y, symbol_def.radius, 0, 2 * Math.PI, false);
+        context.arc(center_x, center_y, profile.radius, 0, 2 * Math.PI, false);
         context.fill();
         context.closePath();
       }
@@ -91,18 +101,24 @@ function drawSymbol(context, sym, x, y)
   }
   else
   {
-    context.fillStyle = 'grey';
-    context.fillRect(x,y,w, symbol_def.height);
+    context.fillStyle = profile.unknown_color;
+    context.fillRect(x,y,w, profile.height);
   }
   return w;
 }
 
-function drawString(string, dict)
+function drawString(string, dict, profile)
 {
+  profile = validateProfile(profile);
   dict = typeof dict !== 'undefined' ? dict : default_dictionary;
   if (dict === null)
   {
     alert("No dictionary set");
+    return;
+  }
+  if (profile === null)
+  {
+    alert("No profile set");
     return;
   }
   
@@ -119,14 +135,14 @@ function drawString(string, dict)
   var w = 0;
   for(var i = 0; i < string.length; ++i)
   {
-    w += getSymWidth(lookupSym(string[i], dict)) + symbol_def.padding;
+    w += getSymWidth(lookupSym(string[i], dict), profile) + profile.padding;
   }
-  w += symbol_def.padding;
+  w += profile.padding;
   buffer.width = w;
-  buffer.height = symbol_def.height + (2 * symbol_def.padding);
+  buffer.height = profile.height + (2 * profile.padding);
 
-  var y = symbol_def.padding;
-  var x = symbol_def.padding;
+  var y = profile.padding;
+  var x = profile.padding;
   var context = buffer.getContext('2d');
   //context.fillStyle = 'rgba(0,0,0,0)';
   //context.fillRect(0,0,buffer.width, buffer.height);
@@ -135,19 +151,19 @@ function drawString(string, dict)
     w = 0;
     if (string[i] != ' ')
     {
-      w = drawSymbol(context, lookupSym(string[i], dict), x, y);
+      w = drawSymbol(context, lookupSym(string[i], dict), x, y, profile);
     }
     else
     {
-      w = drawSpace();
+      w = drawSpace(profile);
     }
-    x += w + symbol_def.padding;
+    x += w + profile.padding;
   }
   var img = buffer.toDataURL("image/png");
   return img;
 }
 
-function setDictionary(key)
+function setDefaultDictionary(key)
 {
   if (key in dictionaries)
   {
@@ -160,7 +176,54 @@ function setDictionary(key)
   return default_dictionary;
 }
 
-function drawStringWithDictionary(string, key)
+function setDefaultProfile(key)
 {
-  return drawString(string, setDictionary(key));
+  if(key in symbol_profiles)
+  {
+    default_profile = symbol_profiles[key];
+  }
+  else
+  {
+    alert("Profile " + key + " not registered");
+  }
+  return default_profile;
+}
+
+function drawStringWithDictionary(string, key, prof)
+{
+  return drawString(string, getDictionary(key), getProfile(prof));
+}
+
+function registerProfile(key, profile)
+{
+  symbol_profiles[key] = profile;
+}
+
+function registerDictionary(key, dict)
+{
+  dictionaries[key] = dict;
+}
+
+function getProfile(key)
+{
+  if (key in symbol_profiles)
+  {
+    return symbol_profiles[key];
+  }
+  else
+  {
+    return null;
+  }
+}
+
+function getDictionary(key)
+{
+  if (key in dictionaries)
+  {
+    return dictionaries[key];
+  }
+  else
+  {
+    return null;
+  }
 }

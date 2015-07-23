@@ -111,4 +111,4 @@ var clocktalk_dictionary = {
          unknown: false},
 };
 
-dictionaries['Clocktalk'] = clocktalk_dictionary;
+registerDictionary('Clocktalk', clocktalk_dictionary);
