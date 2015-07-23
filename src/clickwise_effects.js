@@ -40,13 +40,13 @@ function toggleSettings(evt)
 {
 	if(!open)
 	{
-		$('#collapse_icon').attr("src", "collapse_open.png");
+		$('#collapse_icon').attr("src", "assets/collapse_open.png");
 		open = true;
 		$('.settings').slideDown();
 	}
 	else
 	{
-		$('#collapse_icon').attr("src", "collapse.png");
+		$('#collapse_icon').attr("src", "assets/collapse.png");
 		open = false;
 		$('.settings').slideUp();
 	}
