@@ -29,7 +29,7 @@ function validateProfile(prof)
   return typeof prof !== 'undefined' ? prof : default_profile;
 }
 
-function lookupSym(character, dict)
+function lookupSymbol(character, dict)
 {
   dict = validateDictionary(dict);
   if (dict === null)
@@ -135,7 +135,7 @@ function drawString(string, dict, profile)
   var w = 0;
   for(var i = 0; i < string.length; ++i)
   {
-    w += getSymWidth(lookupSym(string[i], dict), profile) + profile.padding;
+    w += getSymWidth(lookupSymbol(string[i], dict), profile) + profile.padding;
   }
   w += profile.padding;
   buffer.width = w;
@@ -151,7 +151,7 @@ function drawString(string, dict, profile)
     w = 0;
     if (string[i] != ' ')
     {
-      w = drawSymbol(context, lookupSym(string[i], dict), x, y, profile);
+      w = drawSymbol(context, lookupSymbol(string[i], dict), x, y, profile);
     }
     else
     {
