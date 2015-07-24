@@ -31,7 +31,7 @@ body{
   display:inline;
 }
 
-img{
+.auto_image{
   display:block;
   margin:auto;
 }
@@ -76,6 +76,8 @@ img{
 .github_mark
 {
   position: fixed; 
+  height:32px;
+  width:32px;
   bottom: 1em; 
   right: 1em;
 }
