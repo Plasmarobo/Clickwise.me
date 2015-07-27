@@ -5,6 +5,7 @@ $(document).ready(function()
 	positionInput();
 	setupDebug();
 	setupDictionaries('dictionary_list');
+	setupProfiles('profile_list');
 
 	$('#source_string').keyup(function(){
 		if (!$('#source_string').val())

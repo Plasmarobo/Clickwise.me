@@ -4,7 +4,7 @@
 
 
 var default_profile = null;
-var symbol_profiles = {};
+var profiles = {};
 var debug = false;
 var max_dots = 6;
 var max_dashes = 5;
@@ -178,9 +178,9 @@ function setDefaultDictionary(key)
 
 function setDefaultProfile(key)
 {
-  if(key in symbol_profiles)
+  if(key in profiles)
   {
-    default_profile = symbol_profiles[key];
+    default_profile = profiles[key];
   }
   else
   {
@@ -196,7 +196,7 @@ function drawStringWithDictionary(string, key, prof)
 
 function registerProfile(key, profile)
 {
-  symbol_profiles[key] = profile;
+  profiles[key] = profile;
 }
 
 function registerDictionary(key, dict)
@@ -206,9 +206,9 @@ function registerDictionary(key, dict)
 
 function getProfile(key)
 {
-  if (key in symbol_profiles)
+  if (key in profiles)
   {
-    return symbol_profiles[key];
+    return profiles[key];
   }
   else
   {

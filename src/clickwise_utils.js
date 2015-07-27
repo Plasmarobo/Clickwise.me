@@ -1,17 +1,10 @@
 function render(event)
 {
 	var src_str = document.getElementById("source_string").value;
-	var dictionary_key = "";
-
-	var radios = document.getElementsByName('dictionary');
-	for (var i = 0, length = radios.length; i < length; i++) {
-	  if (radios[i].checked) {
-		  dictionary_key = radios[i].value;
-		  // only one radio can be logically checked, don't check the rest
-		  break;
-	  }
-	}
-	imgURL = drawStringWithDictionary(src_str, dictionary_key, 'default');
+	var dictionary_key = getSelectedRadio("dictionary");
+	var profile_key    = getSelectedRadio("profile");
+	
+	imgURL = drawStringWithDictionary(src_str, dictionary_key, profile_key);
 	document.getElementById("clickwise-result").src = imgURL;
 	if (!(typeof event === "undefined"))
 	{
@@ -19,23 +12,56 @@ function render(event)
 	}
 	return false;
 }
+var radio_names = {};
+function generateRadioFragment(name, key, div_class, text_class)
+{
+	if (!(name in radio_names))
+	{
+		checked = true;
+		radio_names[name] = true;
+	}
+	else
+	{
+			checked = false;
+	}
+	var radio_html = '<input type="radio" name="'+ name +'" value="' + key + '"';
+	  if ( checked ) {
+		  radio_html += ' checked="checked"';
+	  }
+	  radio_html += '/><span class="'+ text_class + '">' + key + '</span>';
+
+	  var radio_fragment = document.createElement('div');
+	  radio_fragment.innerHTML = radio_html;
+	  radio_fragment.className = div_class;
+	  return radio_fragment;
+}
+
+function getSelectedRadio(name)
+{
+	var radios = document.getElementsByName(name);
+	for (var i = 0, length = radios.length; i < length; i++) {
+	  if (radios[i].checked) {
+		  return radios[i].value;
+		  // only one radio can be logically checked, don't check the rest
+	  }
+	}
+	return "";
+}
 
 function setupDictionaries(id)
 {
-	var checked = true;
 	for (var key in dictionaries)
 	{
-	  var radioHtml = '<input type="radio" name="dictionary" value="' + key + '"';
-	  if ( checked ) {
-		  radioHtml += ' checked="checked"';
-		  checked = false;
-	  }
-	  radioHtml += '/><span class="dictionary_text">' + key + '</span>';
+	  document.getElementById(id).appendChild(generateRadioFragment("dictionary", key, "dictionary_entry", "dictionary_text"));
+	}
+}
 
-	  var radioFragment = document.createElement('div');
-	  radioFragment.innerHTML = radioHtml;
-	  radioFragment.className = "dictionary_entry";
-	  document.getElementById(id).appendChild(radioFragment);
+function setupProfiles(id)
+{
+	
+	for (var key in profiles)
+	{
+	  document.getElementById(id).appendChild(generateRadioFragment("profile", key, "profile_entry", "profile_text"));
 	}
 }
 
