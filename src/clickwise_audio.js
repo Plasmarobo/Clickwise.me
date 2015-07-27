@@ -12,6 +12,7 @@ function validateModel(model)
 
 function generateSound(src_str, model, dict)
 {
+	src_str = src_str.toUpperCase();
 	model = validateModel(model);
 	dict  = validateDictionary(dict);	
 	model.initialize(audio_context);
@@ -25,11 +26,12 @@ function generateSound(src_str, model, dict)
 	var volume = audio_context.createGain();
 	model.connect(volume);
 	volume.connect(sound);
-	volume.gain.value = 1;
-	var symbol_stream = [];
+	volume.gain.value = 0.3;
+	var symbol_stream = new Array();
 	for(var i = 0; i < src_str.length; ++i)
 	{
-		symbol_stream.push(lookupSymbol(src_str[i], dict));
+		var sym = lookupSymbol(src_str[i], dict);
+		symbol_stream.push(sym);
 	}
 	model.render(symbol_stream);
 	model.play();

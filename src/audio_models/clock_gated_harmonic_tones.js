@@ -1,12 +1,12 @@
 //Clock-Gated Harmonic Tones
 // 2015 Austen Higgins-Cassidy
+var audio_delay = 0.2; //To allow commands to settle
 function newCGHT()
 {
   var cght = {
-	  osc_cache: {},
-	  base_symbol_time: 0.5, //seconds
+	  base_symbol_time: 1, //seconds
 	  context: null,   
-	  current_time: 0.5, //tracks time for symbol scheduling (base delay of 500 ms to allow scheduling)
+	  current_time: audio_delay, //tracks time for symbol scheduling (base delay of 500 ms to allow scheduling)
 	  queue: [],
 	  dot_base_note: 40,
 	  dash_base_note: 3,
@@ -25,22 +25,20 @@ function newCGHT()
 	this.dest = dest;
   }.bind(cght);
   
-  cght.enqueueSymbol = function(time, frequency)
+  cght.enqueueSymbol = function(time, frequency, length)
   {
-		if (!(frequency in this.osc_cache))
-		{
-			var osc = this.context.createOscillator();
-			osc.frequency.value = frequency;
-			osc.type = "sine";
-			osc.connect(this.dest);
-			this.osc_cache[frequency] = osc;
-		}
-		this.queue.push({time: time, frequency: frequency});
+		var osc = this.context.createOscillator();
+		osc.frequency.value = frequency;
+		osc.type = "sine";
+		osc.connect(this.dest);
+		this.queue.push({start: time, end: time + length, osc: osc});
+		//osc.start(time);
+		//osc.stop(time+length);
   }.bind(cght);
   
   cght.renderSymbol = function(sym){
 	// Determine dot frequency
-	var periods = 5 * sym.width_coeff;
+	var symbol_time = this.base_symbol_time * sym.width_coeff;
 	if (sym.width_coeff == 1)
 	{
 		for(var i = 0; i < sym.dots.length; ++i)
@@ -50,7 +48,7 @@ function newCGHT()
 				//musical 3rds?
 				var note = this.dot_base_note + (4 * i);
 				var frequency = Math.pow(2, ((note-49)/12)) * 440;
-				this.enqueueSymbol(this.current_time, frequency);
+				this.enqueueSymbol(this.current_time, frequency, symbol_time);
 			}
 		}
 		// Determine dash frequency
@@ -60,19 +58,18 @@ function newCGHT()
 			{
 				var note = this.dash_base_note + (4 * i);
 				var frequency = Math.pow(2, ((note-49)/12)) * 440;
-				this.enqueueSymbol(this.current_time, frequency);
+				this.enqueueSymbol(this.current_time, frequency, symbol_time);
 			}
 		}
 		//this.enqueueEnd(current_time);
 	}
-	this.current_time += this.base_symbol_time * periods;
+	this.current_time += symbol_time;
   }.bind(cght);
 
   
   cght.render = function(symbol_stream)
   {
-	var i = 0;
-	while(symbol_stream.length > i)
+	for(var i = 0; i < symbol_stream.length; ++i)
 	{
 		this.renderSymbol(symbol_stream[i]);
 	}
@@ -80,27 +77,18 @@ function newCGHT()
   
   cght.play = function()
   {
-	  if (queue.length > 1)
+	  this.osc.start(audio_delay);
+	  for(var i = 0; i < this.queue.length; ++i)
 	  {
-		var next = 0;
-		var time = queue[0];
-		this.osc.start(time);
-		while(next < queue.length)
-		{
-			while(queue[next].time <= time)
-			{
-				osc_cache[queue[next].frequency].start(time);
-				++next;
-			}
-			time = queue[next].time;
-			for(var osc in osc_cache)
-			{
-				osc.stop(time);
-			}
-		}
-		this.osc.stop(time);
+		  this.queue[i].osc.start(this.queue[i].start);
+		  this.queue[i].osc.stop(this.queue[i].end);
 	  }
-	
+	  
+	  this.osc.onended = function(){
+		  this.queue = [];
+		  this.current_time = audio_delay;
+	  }.bind(this);
+	  this.osc.stop(this.current_time + audio_delay);
   }.bind(cght);
   return cght;
 }
