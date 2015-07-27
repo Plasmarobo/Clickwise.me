@@ -6,6 +6,9 @@ function newDTMC()
   var dtmc = {
 	  max_symbol_time: 1, //seconds
 	  context: null,   
+	  sync_click: null,
+	  dot_click: null,
+	  dash_click: null,
 	  delay: audio_delay,
 	  queue: [],
 	  dest: null,
@@ -13,6 +16,35 @@ function newDTMC()
   
   dtmc.initialize = function(context){
 	this.context = context;
+	var t = 0.005 * 44100;
+	this.sync_click = context.createBuffer(1, t, 44100);
+	this.dot_click  = context.createBuffer(1, t, 44100);
+	this.dash_click = context.createBuffer(1, t, 44100);
+	var sync_channel_data = this.sync_click.getChannelData(0);
+	var dot_channel_data = this.dot_click.getChannelData(0);
+	var dash_channel_data = this.dash_click.getChannelData(0);
+	var ct = 0;
+	for(var i = 0; i < t; ++i)
+	{
+		// Compose sines
+		for (var f = 2000; f < 2500; ++f)
+		{
+			sync_channel_data[t] += Math.sin(f*2*Math.PI * (ct)/t);
+		}
+		for (var f = 3000; f< 4500; ++f)
+		{
+			dot_channel_data[t] += Math.sin(f*2*Math.PI * (ct)/t);
+ 		}
+ 		for (var f = 5000; f< 6500; ++f)
+		{
+			dash_channel_data[t] += Math.sin(f*2*Math.PI * (ct)/t);
+ 		}
+		//Normalize
+		sync_channel_data[t] /= 500;
+		dot_channel_data[t] /= 1500;
+		dash_channel_data[t] /= 1500;
+		ct += t;
+	}
   }.bind(dtmc);
   
   dtmc.connect = function(dest){
@@ -20,60 +52,27 @@ function newDTMC()
   }.bind(dtmc);
   
   dtmc.syncClick = function(start){
-		var start_f = 2000;
-		var end_f =   2500;
-		var end = start + 0.005;
-		var inc = 10;
-		for(var i = start_f; i < end_f; i += inc)
-		{
-			var osc = this.context.createOscillator();
-			osc.frequency.value = i;
-			osc.connect(this.dest);
-			osc.start(start);
-			osc.stop(end);
-			osc.onend = function()
-			{
-				this.disconnect();
-			}.bind(osc);
-		}
+  	var click = this.context.createBufferSource();
+	click.loop = false;
+	click.buffer = this.sync_click;
+	click.connect(this.dest);
+	click.start(start);
 	}.bind(dtmc);
 	
 	dtmc.dotClick = function(start){
-		var start_f = 3000;
-		var end_f =   4500;
-		var end = start + 0.005;
-		var inc = 10;
-		for(var i = start_f; i < end_f; i += inc)
-		{
-			var osc = this.context.createOscillator();
-			osc.frequency.value = i;
-			osc.connect(this.dest);
-			osc.start(start);
-			osc.stop(end);
-			osc.onend = function()
-			{
-				this.disconnect();
-			}.bind(osc);
-		}
+		var click = this.context.createBufferSource();
+	click.loop = false;
+	click.buffer = this.dot_click;
+	click.connect(this.dest);
+	click.start(start);
 	}.bind(dtmc);
 
 	dtmc.dashClick = function(start){
-		var start_f = 5000;
-		var end_f =   6500;
-		var end = start + 0.005;
-		var inc = 10;
-		for(var i = start_f; i < end_f; i += inc)
-		{
-			var osc = this.context.createOscillator();
-			osc.frequency.value = i;
-			osc.connect(this.dest);
-			osc.start(start);
-			osc.stop(end);
-			osc.onend = function()
-			{
-				this.disconnect();
-			}.bind(osc);
-		}
+		var click = this.context.createBufferSource();
+	click.loop = false;
+	click.buffer = this.dash_click;
+	click.connect(this.dest);
+	click.start(start);
 	}.bind(dtmc);
   
   
