@@ -21,12 +21,12 @@ function generateSound(src_str, model, dict)
 	// We probably want to save this to a file eventually
 	// Web audio api doesn't seem to support this yet
 	//var recorder = new MediaRecorder(sound.stream);
-	
+
 	sound.connect(audio_context.destination);
 	var volume = audio_context.createGain();
 	model.connect(volume);
 	volume.connect(sound);
-	volume.gain.value = 0.6;
+	volume.gain.value = 0.5;
 	var symbol_stream = new Array();
 	for(var i = 0; i < src_str.length; ++i)
 	{

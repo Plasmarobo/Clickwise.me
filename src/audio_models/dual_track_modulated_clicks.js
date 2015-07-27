@@ -4,7 +4,7 @@ var audio_delay = 0.5;
 function newDTMC()
 {
   var dtmc = {
-	  max_symbol_time: 1, //seconds
+	  max_symbol_time: 0.3, //seconds
 	  context: null,   
 	  sync_click: null,
 	  dot_click: null,
@@ -16,34 +16,32 @@ function newDTMC()
   
   dtmc.initialize = function(context){
 	this.context = context;
-	var t = 0.005 * 44100;
+	var t = 0.05 * 44100;
 	this.sync_click = context.createBuffer(1, t, 44100);
 	this.dot_click  = context.createBuffer(1, t, 44100);
 	this.dash_click = context.createBuffer(1, t, 44100);
 	var sync_channel_data = this.sync_click.getChannelData(0);
 	var dot_channel_data = this.dot_click.getChannelData(0);
 	var dash_channel_data = this.dash_click.getChannelData(0);
-	var ct = 0;
 	for(var i = 0; i < t; ++i)
 	{
 		// Compose sines
-		for (var f = 2000; f < 2500; ++f)
+		for (var f = 200; f < 300; ++f)
 		{
-			sync_channel_data[t] += Math.sin(f*2*Math.PI * (ct)/t);
+			sync_channel_data[i] += Math.sin(f*2*Math.PI * (i/44100));
 		}
-		for (var f = 3000; f< 4500; ++f)
+		for (var f = 1000; f< 1500; ++f)
 		{
-			dot_channel_data[t] += Math.sin(f*2*Math.PI * (ct)/t);
+			dot_channel_data[i] += Math.sin(f*2*Math.PI * (i/44100));
  		}
- 		for (var f = 5000; f< 6500; ++f)
+ 		for (var f = 2000; f< 2100; ++f)
 		{
-			dash_channel_data[t] += Math.sin(f*2*Math.PI * (ct)/t);
+			dash_channel_data[i] += Math.sin(f*2*Math.PI * (i/44100));
  		}
-		//Normalize
-		sync_channel_data[t] /= 500;
-		dot_channel_data[t] /= 1500;
-		dash_channel_data[t] /= 1500;
-		ct += t;
+		//Normalize for frequency
+		sync_channel_data[i] /= 100;
+		dot_channel_data[i] /= 500;
+		dash_channel_data[i] /= 100;
 	}
   }.bind(dtmc);
   
