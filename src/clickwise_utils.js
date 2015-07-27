@@ -69,7 +69,7 @@ function setupDebug()
 function playAudio()
 {
 	var dict  = getDictionary('Clocktalk');
-	var model = getAudioModel('CGHT');
+	var model = getAudioModel('DTMC');
 	var src_str = document.getElementById("source_string").value;
 	generateSound(src_str, model, dict);
 }
