@@ -34,14 +34,14 @@ function newDTMC()
 		{
 			dot_channel_data[i] += Math.sin(f*2*Math.PI * (i/44100));
  		}
- 		for (var f = 2000; f< 2100; ++f)
+ 		for (var f = 2200; f< 2400; ++f)
 		{
 			dash_channel_data[i] += Math.sin(f*2*Math.PI * (i/44100));
  		}
 		//Normalize for frequency
 		sync_channel_data[i] /= 100;
 		dot_channel_data[i] /= 500;
-		dash_channel_data[i] /= 100;
+		dash_channel_data[i] /= 200;
 	}
   }.bind(dtmc);
   
