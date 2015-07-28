@@ -15,14 +15,14 @@ Developers
 
 The interface could use some cleanup, but plugins for audio models, dictionaries, and profiles can be found in the src directories. To implement your own plugin, you simply register the model.
 
-# Dictionary
+## Dictionary
 Dictionaries are simple mappings from characters into a symbol type. There are between 1 and 6 dots, and 5 possible edges between them (dashes). This is subject to change as more is learned about clickwise and clocktalk.
 
-# Profile
+## Profile
 These determine how the symbols are rendered. The properties listed are the properties used. 
 Relatively self-explanitory.
 
-# Audio Model
+## Audio Model
 Audio models are more internal. 
 The render function, intitalize function, and connect functions are important. Everything else is up to the implementer.
 
